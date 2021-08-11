@@ -7,31 +7,35 @@ import java.util.Set;
 
 import org.inferred.freebuilder.FreeBuilder;
 
+/*
+ * article: https://www.baeldung.com/java-builder-pattern-freebuilder 
+ */
+
 @FreeBuilder
 public interface Employee {
 
-	String name();
-	int age();
-	String department();
-	Optional<String> nickname();
-	Optional<Double> salaryInUSD();
-	String email();
-	List<Integer> nums();
-	Set<Integer> nums2();
-	Map<String, String> keyValueMap();
-	Map<String, String> map2();
-	Map<String, String> map3();
+	String getName();
+	int getAge();
+	String getDepartment();
+	Optional<String> getNickname();
+	Optional<Double> getSalaryInUSD();
+	String getEmail();
+	List<Integer> getNums();
+	Set<Integer> getNums2();
+	Map<String, String> getKeyValueMap();
+	Map<String, String> getMap2();
+	Map<String, String> getMap3();
 
 	public class Builder extends Employee_Builder {
 		
 		public Builder() {
-			department("default department");
+			setDepartment("default department");
 		}
 		
 		@Override
-		public Builder email(String email) {
+		public Builder setEmail(String email) {
 			if(isValidEmail(email)) {
-				return super.email(email);
+				return super.setEmail(email);
 			}
 			
 			throw new IllegalArgumentException("Invalid email: " + email);

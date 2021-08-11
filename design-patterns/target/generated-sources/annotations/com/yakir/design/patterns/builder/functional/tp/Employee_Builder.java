@@ -76,20 +76,20 @@ abstract class Employee_Builder {
   private final EnumSet<Property> _unsetProperties = EnumSet.allOf(Property.class);
 
   /**
-   * Sets the value to be returned by {@link Employee#name()}.
+   * Sets the value to be returned by {@link Employee#getName()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code name} is null
    */
-  public Employee.Builder name(String name) {
+  public Employee.Builder setName(String name) {
     this.name = Objects.requireNonNull(name);
     _unsetProperties.remove(Property.NAME);
     return (Employee.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link Employee#name()} by applying {@code mapper} to it
-   * and using the result.
+   * Replaces the value to be returned by {@link Employee#getName()} by applying {@code mapper} to
+   * it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
@@ -97,15 +97,15 @@ abstract class Employee_Builder {
    */
   public Employee.Builder mapName(UnaryOperator<String> mapper) {
     Objects.requireNonNull(mapper);
-    return name(mapper.apply(name()));
+    return setName(mapper.apply(getName()));
   }
 
   /**
-   * Returns the value that will be returned by {@link Employee#name()}.
+   * Returns the value that will be returned by {@link Employee#getName()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public String name() {
+  public String getName() {
     if (_unsetProperties.contains(Property.NAME)) {
       throw new IllegalStateException("name not set");
     }
@@ -113,18 +113,18 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#age()}.
+   * Sets the value to be returned by {@link Employee#getAge()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder age(int age) {
+  public Employee.Builder setAge(int age) {
     this.age = age;
     _unsetProperties.remove(Property.AGE);
     return (Employee.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link Employee#age()} by applying {@code mapper} to it
+   * Replaces the value to be returned by {@link Employee#getAge()} by applying {@code mapper} to it
    * and using the result.
    *
    * @return this {@code Builder} object
@@ -133,15 +133,15 @@ abstract class Employee_Builder {
    */
   public Employee.Builder mapAge(IntUnaryOperator mapper) {
     Objects.requireNonNull(mapper);
-    return age(mapper.applyAsInt(age()));
+    return setAge(mapper.applyAsInt(getAge()));
   }
 
   /**
-   * Returns the value that will be returned by {@link Employee#age()}.
+   * Returns the value that will be returned by {@link Employee#getAge()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public int age() {
+  public int getAge() {
     if (_unsetProperties.contains(Property.AGE)) {
       throw new IllegalStateException("age not set");
     }
@@ -149,20 +149,20 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#department()}.
+   * Sets the value to be returned by {@link Employee#getDepartment()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code department} is null
    */
-  public Employee.Builder department(String department) {
+  public Employee.Builder setDepartment(String department) {
     this.department = Objects.requireNonNull(department);
     _unsetProperties.remove(Property.DEPARTMENT);
     return (Employee.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link Employee#department()} by applying {@code mapper}
-   * to it and using the result.
+   * Replaces the value to be returned by {@link Employee#getDepartment()} by applying {@code
+   * mapper} to it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
@@ -170,15 +170,15 @@ abstract class Employee_Builder {
    */
   public Employee.Builder mapDepartment(UnaryOperator<String> mapper) {
     Objects.requireNonNull(mapper);
-    return department(mapper.apply(department()));
+    return setDepartment(mapper.apply(getDepartment()));
   }
 
   /**
-   * Returns the value that will be returned by {@link Employee#department()}.
+   * Returns the value that will be returned by {@link Employee#getDepartment()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public String department() {
+  public String getDepartment() {
     if (_unsetProperties.contains(Property.DEPARTMENT)) {
       throw new IllegalStateException("department not set");
     }
@@ -186,45 +186,45 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#nickname()}.
+   * Sets the value to be returned by {@link Employee#getNickname()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code nickname} is null
    */
-  public Employee.Builder nickname(String nickname) {
+  public Employee.Builder setNickname(String nickname) {
     this.nickname = Objects.requireNonNull(nickname);
     return (Employee.Builder) this;
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#nickname()}.
+   * Sets the value to be returned by {@link Employee#getNickname()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder nickname(Optional<? extends String> nickname) {
+  public Employee.Builder setNickname(Optional<? extends String> nickname) {
     if (nickname.isPresent()) {
-      return nickname(nickname.get());
+      return setNickname(nickname.get());
     } else {
       return clearNickname();
     }
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#nickname()}.
+   * Sets the value to be returned by {@link Employee#getNickname()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder nullableNickname(String nickname) {
+  public Employee.Builder setNullableNickname(String nickname) {
     if (nickname != null) {
-      return nickname(nickname);
+      return setNickname(nickname);
     } else {
       return clearNickname();
     }
   }
 
   /**
-   * If the value to be returned by {@link Employee#nickname()} is present, replaces it by applying
-   * {@code mapper} to it and using the result.
+   * If the value to be returned by {@link Employee#getNickname()} is present, replaces it by
+   * applying {@code mapper} to it and using the result.
    *
    * <p>If the result is null, clears the value.
    *
@@ -232,11 +232,11 @@ abstract class Employee_Builder {
    * @throws NullPointerException if {@code mapper} is null
    */
   public Employee.Builder mapNickname(UnaryOperator<String> mapper) {
-    return nickname(nickname().map(mapper));
+    return setNickname(getNickname().map(mapper));
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#nickname()} to {@link Optional#empty()
+   * Sets the value to be returned by {@link Employee#getNickname()} to {@link Optional#empty()
    * Optional.empty()}.
    *
    * @return this {@code Builder} object
@@ -246,49 +246,49 @@ abstract class Employee_Builder {
     return (Employee.Builder) this;
   }
 
-  /** Returns the value that will be returned by {@link Employee#nickname()}. */
-  public Optional<String> nickname() {
+  /** Returns the value that will be returned by {@link Employee#getNickname()}. */
+  public Optional<String> getNickname() {
     return Optional.ofNullable(nickname);
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#salaryInUSD()}.
+   * Sets the value to be returned by {@link Employee#getSalaryInUSD()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder salaryInUSD(double salaryInUSD) {
+  public Employee.Builder setSalaryInUSD(double salaryInUSD) {
     this.salaryInUSD = salaryInUSD;
     return (Employee.Builder) this;
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#salaryInUSD()}.
+   * Sets the value to be returned by {@link Employee#getSalaryInUSD()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder salaryInUSD(Optional<? extends Double> salaryInUSD) {
+  public Employee.Builder setSalaryInUSD(Optional<? extends Double> salaryInUSD) {
     if (salaryInUSD.isPresent()) {
-      return salaryInUSD(salaryInUSD.get());
+      return setSalaryInUSD(salaryInUSD.get());
     } else {
       return clearSalaryInUSD();
     }
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#salaryInUSD()}.
+   * Sets the value to be returned by {@link Employee#getSalaryInUSD()}.
    *
    * @return this {@code Builder} object
    */
-  public Employee.Builder nullableSalaryInUSD(Double salaryInUSD) {
+  public Employee.Builder setNullableSalaryInUSD(Double salaryInUSD) {
     if (salaryInUSD != null) {
-      return salaryInUSD(salaryInUSD);
+      return setSalaryInUSD(salaryInUSD);
     } else {
       return clearSalaryInUSD();
     }
   }
 
   /**
-   * If the value to be returned by {@link Employee#salaryInUSD()} is present, replaces it by
+   * If the value to be returned by {@link Employee#getSalaryInUSD()} is present, replaces it by
    * applying {@code mapper} to it and using the result.
    *
    * <p>If the result is null, clears the value.
@@ -297,11 +297,11 @@ abstract class Employee_Builder {
    * @throws NullPointerException if {@code mapper} is null
    */
   public Employee.Builder mapSalaryInUSD(UnaryOperator<Double> mapper) {
-    return salaryInUSD(salaryInUSD().map(mapper));
+    return setSalaryInUSD(getSalaryInUSD().map(mapper));
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#salaryInUSD()} to {@link Optional#empty()
+   * Sets the value to be returned by {@link Employee#getSalaryInUSD()} to {@link Optional#empty()
    * Optional.empty()}.
    *
    * @return this {@code Builder} object
@@ -311,26 +311,26 @@ abstract class Employee_Builder {
     return (Employee.Builder) this;
   }
 
-  /** Returns the value that will be returned by {@link Employee#salaryInUSD()}. */
-  public Optional<Double> salaryInUSD() {
+  /** Returns the value that will be returned by {@link Employee#getSalaryInUSD()}. */
+  public Optional<Double> getSalaryInUSD() {
     return Optional.ofNullable(salaryInUSD);
   }
 
   /**
-   * Sets the value to be returned by {@link Employee#email()}.
+   * Sets the value to be returned by {@link Employee#getEmail()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code email} is null
    */
-  public Employee.Builder email(String email) {
+  public Employee.Builder setEmail(String email) {
     this.email = Objects.requireNonNull(email);
     _unsetProperties.remove(Property.EMAIL);
     return (Employee.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link Employee#email()} by applying {@code mapper} to it
-   * and using the result.
+   * Replaces the value to be returned by {@link Employee#getEmail()} by applying {@code mapper} to
+   * it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
@@ -338,15 +338,15 @@ abstract class Employee_Builder {
    */
   public Employee.Builder mapEmail(UnaryOperator<String> mapper) {
     Objects.requireNonNull(mapper);
-    return email(mapper.apply(email()));
+    return setEmail(mapper.apply(getEmail()));
   }
 
   /**
-   * Returns the value that will be returned by {@link Employee#email()}.
+   * Returns the value that will be returned by {@link Employee#getEmail()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public String email() {
+  public String getEmail() {
     if (_unsetProperties.contains(Property.EMAIL)) {
       throw new IllegalStateException("email not set");
     }
@@ -354,7 +354,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds {@code element} to the list to be returned from {@link Employee#nums()}.
+   * Adds {@code element} to the list to be returned from {@link Employee#getNums()}.
    *
    * @return this {@code Builder} object
    */
@@ -364,7 +364,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from {@link Employee#nums()}.
+   * Adds each element of {@code elements} to the list to be returned from {@link
+   * Employee#getNums()}.
    *
    * @return this {@code Builder} object
    */
@@ -377,7 +378,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from {@link Employee#nums()}.
+   * Adds each element of {@code elements} to the list to be returned from {@link
+   * Employee#getNums()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -394,7 +396,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from {@link Employee#nums()}.
+   * Adds each element of {@code elements} to the list to be returned from {@link
+   * Employee#getNums()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -404,7 +407,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from {@link Employee#nums()}.
+   * Adds each element of {@code elements} to the list to be returned from {@link
+   * Employee#getNums()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -414,7 +418,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Applies {@code mutator} to the list to be returned from {@link Employee#nums()}.
+   * Applies {@code mutator} to the list to be returned from {@link Employee#getNums()}.
    *
    * <p>This method mutates the list in-place. {@code mutator} is a void consumer, so any value
    * returned from a lambda will be ignored. Take care not to call pure functions, like {@link
@@ -430,7 +434,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Clears the list to be returned from {@link Employee#nums()}.
+   * Clears the list to be returned from {@link Employee#getNums()}.
    *
    * @return this {@code Builder} object
    */
@@ -440,15 +444,15 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Returns an unmodifiable view of the list that will be returned by {@link Employee#nums()}.
+   * Returns an unmodifiable view of the list that will be returned by {@link Employee#getNums()}.
    * Changes to this builder will be reflected in the view.
    */
-  public List<Integer> nums() {
+  public List<Integer> getNums() {
     return Collections.unmodifiableList(nums);
   }
 
   /**
-   * Adds {@code element} to the set to be returned from {@link Employee#nums2()}. If the set
+   * Adds {@code element} to the set to be returned from {@link Employee#getNums2()}. If the set
    * already contains {@code element}, then {@code addNums2} has no effect (only the previously
    * added element is retained).
    *
@@ -460,8 +464,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the set to be returned from {@link Employee#nums2()},
-   * ignoring duplicate elements (only the first duplicate element is added).
+   * Adds each element of {@code elements} to the set to be returned from {@link
+   * Employee#getNums2()}, ignoring duplicate elements (only the first duplicate element is added).
    *
    * @return this {@code Builder} object
    */
@@ -473,8 +477,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the set to be returned from {@link Employee#nums2()},
-   * ignoring duplicate elements (only the first duplicate element is added).
+   * Adds each element of {@code elements} to the set to be returned from {@link
+   * Employee#getNums2()}, ignoring duplicate elements (only the first duplicate element is added).
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -485,8 +489,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the set to be returned from {@link Employee#nums2()},
-   * ignoring duplicate elements (only the first duplicate element is added).
+   * Adds each element of {@code elements} to the set to be returned from {@link
+   * Employee#getNums2()}, ignoring duplicate elements (only the first duplicate element is added).
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -496,8 +500,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Adds each element of {@code elements} to the set to be returned from {@link Employee#nums2()},
-   * ignoring duplicate elements (only the first duplicate element is added).
+   * Adds each element of {@code elements} to the set to be returned from {@link
+   * Employee#getNums2()}, ignoring duplicate elements (only the first duplicate element is added).
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a null element
@@ -508,8 +512,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes {@code element} from the set to be returned from {@link Employee#nums2()}. Does nothing
-   * if {@code element} is not a member of the set.
+   * Removes {@code element} from the set to be returned from {@link Employee#getNums2()}. Does
+   * nothing if {@code element} is not a member of the set.
    *
    * @return this {@code Builder} object
    */
@@ -519,7 +523,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Applies {@code mutator} to the set to be returned from {@link Employee#nums2()}.
+   * Applies {@code mutator} to the set to be returned from {@link Employee#getNums2()}.
    *
    * <p>This method mutates the set in-place. {@code mutator} is a void consumer, so any value
    * returned from a lambda will be ignored. Take care not to call pure functions, like {@link
@@ -535,7 +539,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Clears the set to be returned from {@link Employee#nums2()}.
+   * Clears the set to be returned from {@link Employee#getNums2()}.
    *
    * @return this {@code Builder} object
    */
@@ -545,17 +549,17 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Returns an unmodifiable view of the set that will be returned by {@link Employee#nums2()}.
+   * Returns an unmodifiable view of the set that will be returned by {@link Employee#getNums2()}.
    * Changes to this builder will be reflected in the view.
    */
-  public Set<Integer> nums2() {
+  public Set<Integer> getNums2() {
     return Collections.unmodifiableSet(nums2);
   }
 
   /**
    * Associates {@code key} with {@code value} in the map to be returned from {@link
-   * Employee#keyValueMap()}. If the map previously contained a mapping for the key, the old value
-   * is replaced by the specified value.
+   * Employee#getKeyValueMap()}. If the map previously contained a mapping for the key, the old
+   * value is replaced by the specified value.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if either {@code key} or {@code value} are null
@@ -569,7 +573,7 @@ abstract class Employee_Builder {
 
   /**
    * Copies all of the mappings from {@code map} to the map to be returned from {@link
-   * Employee#keyValueMap()}.
+   * Employee#getKeyValueMap()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code map} is null or contains a null key or value
@@ -583,7 +587,7 @@ abstract class Employee_Builder {
 
   /**
    * Removes the mapping for {@code key} from the map to be returned from {@link
-   * Employee#keyValueMap()}, if one is present.
+   * Employee#getKeyValueMap()}, if one is present.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code key} is null
@@ -595,7 +599,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Invokes {@code mutator} with the map to be returned from {@link Employee#keyValueMap()}.
+   * Invokes {@code mutator} with the map to be returned from {@link Employee#getKeyValueMap()}.
    *
    * <p>This method mutates the map in-place. {@code mutator} is a void consumer, so any value
    * returned from a lambda will be ignored. Take care not to call pure functions, like {@link
@@ -611,7 +615,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes all of the mappings from the map to be returned from {@link Employee#keyValueMap()}.
+   * Removes all of the mappings from the map to be returned from {@link Employee#getKeyValueMap()}.
    *
    * @return this {@code Builder} object
    */
@@ -622,15 +626,15 @@ abstract class Employee_Builder {
 
   /**
    * Returns an unmodifiable view of the map that will be returned by {@link
-   * Employee#keyValueMap()}. Changes to this builder will be reflected in the view.
+   * Employee#getKeyValueMap()}. Changes to this builder will be reflected in the view.
    */
-  public Map<String, String> keyValueMap() {
+  public Map<String, String> getKeyValueMap() {
     return Collections.unmodifiableMap(keyValueMap);
   }
 
   /**
    * Associates {@code key} with {@code value} in the map to be returned from {@link
-   * Employee#map2()}. If the map previously contained a mapping for the key, the old value is
+   * Employee#getMap2()}. If the map previously contained a mapping for the key, the old value is
    * replaced by the specified value.
    *
    * @return this {@code Builder} object
@@ -645,7 +649,7 @@ abstract class Employee_Builder {
 
   /**
    * Copies all of the mappings from {@code map} to the map to be returned from {@link
-   * Employee#map2()}.
+   * Employee#getMap2()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code map} is null or contains a null key or value
@@ -658,8 +662,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from {@link Employee#map2()},
-   * if one is present.
+   * Removes the mapping for {@code key} from the map to be returned from {@link
+   * Employee#getMap2()}, if one is present.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code key} is null
@@ -671,7 +675,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Invokes {@code mutator} with the map to be returned from {@link Employee#map2()}.
+   * Invokes {@code mutator} with the map to be returned from {@link Employee#getMap2()}.
    *
    * <p>This method mutates the map in-place. {@code mutator} is a void consumer, so any value
    * returned from a lambda will be ignored. Take care not to call pure functions, like {@link
@@ -687,7 +691,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes all of the mappings from the map to be returned from {@link Employee#map2()}.
+   * Removes all of the mappings from the map to be returned from {@link Employee#getMap2()}.
    *
    * @return this {@code Builder} object
    */
@@ -697,16 +701,16 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Returns an unmodifiable view of the map that will be returned by {@link Employee#map2()}.
+   * Returns an unmodifiable view of the map that will be returned by {@link Employee#getMap2()}.
    * Changes to this builder will be reflected in the view.
    */
-  public Map<String, String> map2() {
+  public Map<String, String> getMap2() {
     return Collections.unmodifiableMap(map2);
   }
 
   /**
    * Associates {@code key} with {@code value} in the map to be returned from {@link
-   * Employee#map3()}. If the map previously contained a mapping for the key, the old value is
+   * Employee#getMap3()}. If the map previously contained a mapping for the key, the old value is
    * replaced by the specified value.
    *
    * @return this {@code Builder} object
@@ -721,7 +725,7 @@ abstract class Employee_Builder {
 
   /**
    * Copies all of the mappings from {@code map} to the map to be returned from {@link
-   * Employee#map3()}.
+   * Employee#getMap3()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code map} is null or contains a null key or value
@@ -734,8 +738,8 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from {@link Employee#map3()},
-   * if one is present.
+   * Removes the mapping for {@code key} from the map to be returned from {@link
+   * Employee#getMap3()}, if one is present.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code key} is null
@@ -747,7 +751,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Invokes {@code mutator} with the map to be returned from {@link Employee#map3()}.
+   * Invokes {@code mutator} with the map to be returned from {@link Employee#getMap3()}.
    *
    * <p>This method mutates the map in-place. {@code mutator} is a void consumer, so any value
    * returned from a lambda will be ignored. Take care not to call pure functions, like {@link
@@ -763,7 +767,7 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Removes all of the mappings from the map to be returned from {@link Employee#map3()}.
+   * Removes all of the mappings from the map to be returned from {@link Employee#getMap3()}.
    *
    * @return this {@code Builder} object
    */
@@ -773,10 +777,10 @@ abstract class Employee_Builder {
   }
 
   /**
-   * Returns an unmodifiable view of the map that will be returned by {@link Employee#map3()}.
+   * Returns an unmodifiable view of the map that will be returned by {@link Employee#getMap3()}.
    * Changes to this builder will be reflected in the view.
    */
-  public Map<String, String> map3() {
+  public Map<String, String> getMap3() {
     return Collections.unmodifiableMap(map3);
   }
 
@@ -788,27 +792,27 @@ abstract class Employee_Builder {
   public Employee.Builder mergeFrom(Employee value) {
     Employee_Builder defaults = new Employee.Builder();
     if (defaults._unsetProperties.contains(Property.NAME)
-        || !Objects.equals(value.name(), defaults.name())) {
-      name(value.name());
+        || !Objects.equals(value.getName(), defaults.getName())) {
+      setName(value.getName());
     }
-    if (defaults._unsetProperties.contains(Property.AGE) || value.age() != defaults.age()) {
-      age(value.age());
+    if (defaults._unsetProperties.contains(Property.AGE) || value.getAge() != defaults.getAge()) {
+      setAge(value.getAge());
     }
     if (defaults._unsetProperties.contains(Property.DEPARTMENT)
-        || !Objects.equals(value.department(), defaults.department())) {
-      department(value.department());
+        || !Objects.equals(value.getDepartment(), defaults.getDepartment())) {
+      setDepartment(value.getDepartment());
     }
-    value.nickname().ifPresent(this::nickname);
-    value.salaryInUSD().ifPresent(this::salaryInUSD);
+    value.getNickname().ifPresent(this::setNickname);
+    value.getSalaryInUSD().ifPresent(this::setSalaryInUSD);
     if (defaults._unsetProperties.contains(Property.EMAIL)
-        || !Objects.equals(value.email(), defaults.email())) {
-      email(value.email());
+        || !Objects.equals(value.getEmail(), defaults.getEmail())) {
+      setEmail(value.getEmail());
     }
-    addAllNums(value.nums());
-    addAllNums2(value.nums2());
-    putAllKeyValueMap(value.keyValueMap());
-    putAllMap2(value.map2());
-    putAllMap3(value.map3());
+    addAllNums(value.getNums());
+    addAllNums2(value.getNums2());
+    putAllKeyValueMap(value.getKeyValueMap());
+    putAllMap2(value.getMap2());
+    putAllMap3(value.getMap3());
     return (Employee.Builder) this;
   }
 
@@ -824,24 +828,25 @@ abstract class Employee_Builder {
     Employee_Builder defaults = new Employee.Builder();
     if (!base._unsetProperties.contains(Property.NAME)
         && (defaults._unsetProperties.contains(Property.NAME)
-            || !Objects.equals(template.name(), defaults.name()))) {
-      name(template.name());
+            || !Objects.equals(template.getName(), defaults.getName()))) {
+      setName(template.getName());
     }
     if (!base._unsetProperties.contains(Property.AGE)
-        && (defaults._unsetProperties.contains(Property.AGE) || template.age() != defaults.age())) {
-      age(template.age());
+        && (defaults._unsetProperties.contains(Property.AGE)
+            || template.getAge() != defaults.getAge())) {
+      setAge(template.getAge());
     }
     if (!base._unsetProperties.contains(Property.DEPARTMENT)
         && (defaults._unsetProperties.contains(Property.DEPARTMENT)
-            || !Objects.equals(template.department(), defaults.department()))) {
-      department(template.department());
+            || !Objects.equals(template.getDepartment(), defaults.getDepartment()))) {
+      setDepartment(template.getDepartment());
     }
-    template.nickname().ifPresent(this::nickname);
-    template.salaryInUSD().ifPresent(this::salaryInUSD);
+    template.getNickname().ifPresent(this::setNickname);
+    template.getSalaryInUSD().ifPresent(this::setSalaryInUSD);
     if (!base._unsetProperties.contains(Property.EMAIL)
         && (defaults._unsetProperties.contains(Property.EMAIL)
-            || !Objects.equals(template.email(), defaults.email()))) {
-      email(template.email());
+            || !Objects.equals(template.getEmail(), defaults.getEmail()))) {
+      setEmail(template.getEmail());
     }
     addAllNums(base.nums);
     addAllNums2(base.nums2);
@@ -941,57 +946,57 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public String name() {
+    public String getName() {
       return name;
     }
 
     @Override
-    public int age() {
+    public int getAge() {
       return age;
     }
 
     @Override
-    public String department() {
+    public String getDepartment() {
       return department;
     }
 
     @Override
-    public Optional<String> nickname() {
+    public Optional<String> getNickname() {
       return Optional.ofNullable(nickname);
     }
 
     @Override
-    public Optional<Double> salaryInUSD() {
+    public Optional<Double> getSalaryInUSD() {
       return Optional.ofNullable(salaryInUSD);
     }
 
     @Override
-    public String email() {
+    public String getEmail() {
       return email;
     }
 
     @Override
-    public List<Integer> nums() {
+    public List<Integer> getNums() {
       return nums;
     }
 
     @Override
-    public Set<Integer> nums2() {
+    public Set<Integer> getNums2() {
       return nums2;
     }
 
     @Override
-    public Map<String, String> keyValueMap() {
+    public Map<String, String> getKeyValueMap() {
       return keyValueMap;
     }
 
     @Override
-    public Map<String, String> map2() {
+    public Map<String, String> getMap2() {
       return map2;
     }
 
     @Override
-    public Map<String, String> map3() {
+    public Map<String, String> getMap3() {
       return map3;
     }
 
@@ -1117,7 +1122,7 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public String name() {
+    public String getName() {
       if (_unsetProperties.contains(Property.NAME)) {
         throw new UnsupportedOperationException("name not set");
       }
@@ -1125,7 +1130,7 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public int age() {
+    public int getAge() {
       if (_unsetProperties.contains(Property.AGE)) {
         throw new UnsupportedOperationException("age not set");
       }
@@ -1133,7 +1138,7 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public String department() {
+    public String getDepartment() {
       if (_unsetProperties.contains(Property.DEPARTMENT)) {
         throw new UnsupportedOperationException("department not set");
       }
@@ -1141,17 +1146,17 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public Optional<String> nickname() {
+    public Optional<String> getNickname() {
       return Optional.ofNullable(nickname);
     }
 
     @Override
-    public Optional<Double> salaryInUSD() {
+    public Optional<Double> getSalaryInUSD() {
       return Optional.ofNullable(salaryInUSD);
     }
 
     @Override
-    public String email() {
+    public String getEmail() {
       if (_unsetProperties.contains(Property.EMAIL)) {
         throw new UnsupportedOperationException("email not set");
       }
@@ -1159,27 +1164,27 @@ abstract class Employee_Builder {
     }
 
     @Override
-    public List<Integer> nums() {
+    public List<Integer> getNums() {
       return nums;
     }
 
     @Override
-    public Set<Integer> nums2() {
+    public Set<Integer> getNums2() {
       return nums2;
     }
 
     @Override
-    public Map<String, String> keyValueMap() {
+    public Map<String, String> getKeyValueMap() {
       return keyValueMap;
     }
 
     @Override
-    public Map<String, String> map2() {
+    public Map<String, String> getMap2() {
       return map2;
     }
 
     @Override
-    public Map<String, String> map3() {
+    public Map<String, String> getMap3() {
       return map3;
     }
 
