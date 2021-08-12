@@ -1,8 +1,13 @@
-package com.yakir.design.patterns.builder.functional.standalone;
+package com.yakir.design.patterns.builder.functional.consumer;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import lombok.ToString;
+
+/*
+ * article: https://theboreddev.com/functional-patterns-in-java/
+ */
 
 @ToString
 public class Employee {
@@ -17,10 +22,6 @@ public class Employee {
 		this.department = builder.department;
 	}
 	
-	public static Builder builderOf(String name) {
-		return new Builder(name);
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -33,22 +34,21 @@ public class Employee {
 		return Optional.ofNullable(department);
 	}
 	
+	public static Builder builderOf(String name) {
+		return new Builder(name);
+	}
+	
 	public static class Builder {
 		private String name;
-		private int age;
-		private String department;
+		public int age;
+		public String department;
 		
 		private Builder(String name) {
 			this.name = name;
 		}
 		
-		public Builder setAge(int age) {
-			this.age = age;
-			return this;
-		}
-		
-		public Builder setDepartment(String department) {
-			this.department = department;
+		public Builder with(Consumer<Builder> consumer) {
+			consumer.accept(this);
 			return this;
 		}
 		
