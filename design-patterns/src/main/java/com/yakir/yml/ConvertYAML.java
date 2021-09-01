@@ -9,10 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 public class ConvertYAML {
 
+	/*
+	 * article: https://www.baeldung.com/jackson-yaml 
+	 */
 	public static void main(String[] args) {
 		System.out.println(getYAML());
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -39,7 +41,6 @@ public class ConvertYAML {
 	}
 	
 	@Data
-	@NoArgsConstructor
 	public static class Order {
 		private String orderNo;
 	    private LocalDate date;
@@ -48,7 +49,6 @@ public class ConvertYAML {
 	}
 	
 	@Data
-	@NoArgsConstructor
 	public static class OrderLine {
 	    private String item;
 	    private int quantity;
