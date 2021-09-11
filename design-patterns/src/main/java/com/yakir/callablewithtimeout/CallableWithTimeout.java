@@ -159,7 +159,7 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 			// failed for some reason
 		}
 		
-		if(isKilled()) {
+		if(isTimedout()) {
 			executeIfTimedout();
 		}
 		
