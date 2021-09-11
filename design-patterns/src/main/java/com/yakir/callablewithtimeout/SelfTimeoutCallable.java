@@ -2,6 +2,7 @@ package com.yakir.callablewithtimeout;
 
 import static com.yakir.callablewithtimeout.MainClass.logMessage;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -22,12 +23,16 @@ public class SelfTimeoutCallable extends CallableWithTimeout<Integer> {
 		logMessage(myId + " starting sleep of " + sleepMS / 1000);
 		startSleepingMS = System.currentTimeMillis();
 		long sleptTime = 0;
+		int secsToThrowException = new Random().nextInt(8-5)+5;
 		while (shouldKeepSleeping()) {
+			if(myId % 3 == 0 && sleptTime >= secsToThrowException*1000) {
+				throw new RuntimeException();
+			}
+			
 			Utils.sleep(250);
 			sleptTime += 250;
 			if(isKilled()) {
-				throw new RuntimeException(myId + " timedout");
-//				break;
+				break;
 			}
 		}
 		
