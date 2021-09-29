@@ -2,6 +2,8 @@ package com.yakir.sandbox.bofa;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,7 +62,7 @@ public class CheckExecutionInfo {
 
 		private long calcDuration() {
 			String[] parts = duration.split(" ");
-			CheckExecutionInfoBuilder.DurationUnit u = DurationUnit.valueOf(parts[1]);
+			CheckExecutionInfoBuilder.DurationUnit u = DurationUnit.findByName(parts[1]);
 			return u.calcDurationInSeconds(parts[0]);
 		}
 
@@ -90,10 +92,19 @@ public class CheckExecutionInfo {
 		}
 		
 		private static enum DurationUnit {
-			seconds,
-			minutes,
-			hours
+			second,
+			minute,
+			hour
 			;
+			
+			private static Map<String, DurationUnit> reverseMap = new HashMap<>();
+			
+			static {
+				for(DurationUnit v : values()) {
+					reverseMap.put(v.name(), v);
+					reverseMap.put(v.name() + "s", v);
+				}
+			}
 			
 			public String fixDurationString(String duration) {
 				String fixed = "";
@@ -111,6 +122,10 @@ public class CheckExecutionInfo {
 			
 			public long calcDurationInSeconds(String durationString) {
 				return LocalTime.parse(fixDurationString(durationString)).toSecondOfDay();
+			}
+			
+			public static DurationUnit findByName(String name) {
+				return reverseMap.get(name.toLowerCase());
 			}
 		}
 	}
