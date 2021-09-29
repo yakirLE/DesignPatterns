@@ -24,21 +24,15 @@ public class ExecutionStatsAnalyzer {
 	private String toDescription;
 	
 	public void execute(Product from, Product to) throws IOException {
-		/*
-		 * 1 - tickets
-		 * 2 - duration
-		 * 3 - type
-		 * 4 - check
-		 */
 		Map<String, List<CheckExecutionInfo>> results = new TreeMap<>();
-		Matcher m = from.getPattern().matcher(toStats);
-		while(m.find()) {
-			fillMap(m, results, fromDescription);
-		}
-		
-		m = to.getPattern().matcher(fromStats);
+		Matcher m = to.getPattern().matcher(toStats);
 		while(m.find()) {
 			fillMap(m, results, toDescription);
+		}
+		
+		m = from.getPattern().matcher(fromStats);
+		while(m.find()) {
+			fillMap(m, results, fromDescription);
 		}
 		
 		StringJoiner sjContent = new StringJoiner("\n");
@@ -95,7 +89,12 @@ public class ExecutionStatsAnalyzer {
 	}
 	
 	public static enum Product {
-
+		/*
+		 * 1 - tickets
+		 * 2 - duration
+		 * 3 - type
+		 * 4 - check
+		 */
 		AG(Pattern.compile("TICKETS \\[(\\d+)\\]\\s+DURATION \\[([\\d:]+ .+?)\\]\\s+SIGNATURE: \\[(.+?)\\]\\s+(\\[.+')")),
 		DSA(Pattern.compile("PASS \\[\\d+\\]\\s+FAIL \\[(\\d+)\\]\\s+INSUFFICIENT INFORMATION \\[\\d+\\]\\s+DURATION \\[([\\d:]+ .+?)\\]\\s+CHECK: \\[(.+?)\\]\\s+(\\[.+')"))
 		;
