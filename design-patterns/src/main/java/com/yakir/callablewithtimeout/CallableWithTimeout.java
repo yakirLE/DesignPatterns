@@ -23,8 +23,8 @@ import com.yakir.utils.Utils;
  * Prerequisites:<br>
  *    - The Future<T> of the callable must be passed to the callable itself using the setInnerFuture method<br>
  *    - It's recommended to create exit points in the callable implementation using the isKilled method to help the thread to stop gracefully<br>
- *    - a CachedThreadPool pool must be provided to the constructor in order to create TimeBombs instances for each callable<br>
- *      so the timeout will be enforced before we call the getOrWait method if needed (CachedThreadPool meant to help with threads performance)<br>
+ *    - One instance of CallableWithTimeoutEnforcer must be provided [shared between all submitted callables] to the constructor<br>
+ *      in order to enforce timeout without using the getOrWait<br>
  * Notes:<br>
  *    - The method getOrWait is executed from the main thread, not the callable itself<br>
  *    - execution results can be:<br>
