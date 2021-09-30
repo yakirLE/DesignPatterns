@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.yakir.callablewithtimeout.CallableWithTimeout.CallableWithTimeoutEnforcer;
 import com.yakir.utils.Utils;
 
 public class MainClass {
@@ -22,20 +23,21 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		ExecutorService pool = Executors.newFixedThreadPool(10);
-		ExecutorService timeBombsPool = Executors.newCachedThreadPool();
+		CallableWithTimeoutEnforcer enforcer = new CallableWithTimeoutEnforcer(10, TimeUnit.SECONDS);
 		List<SelfTimeoutCallable> lst = new ArrayList<>();
 		long start = System.currentTimeMillis();
 
-		initSleeper(5, pool, timeBombsPool, lst);
-		initSleeper(9, pool, timeBombsPool, lst);
-		initSleeper(7, pool, timeBombsPool, lst);
-		initSleeper(9, pool, timeBombsPool, lst);
-		initSleeper(40, pool, timeBombsPool, lst);
-		initSleeper(6, pool, timeBombsPool, lst);
+		initSleeper(5, pool, enforcer, lst);
+		initSleeper(9, pool, enforcer, lst);
+		initSleeper(7, pool, enforcer, lst);
+		initSleeper(9, pool, enforcer, lst);
+		initSleeper(40, pool, enforcer, lst);
+		initSleeper(6, pool, enforcer, lst);
 		
 		for(int i = 0; i < 34; i++) {
-			initSleeper(new Random().nextInt(30-4) + 4, pool, timeBombsPool, lst);
+			initSleeper(new Random().nextInt(30-4) + 4, pool, enforcer, lst);
 		}
+		enforcer.shutdown();
 		
 		Utils.sleep(start + 10000 - System.currentTimeMillis());
 		logMessage("starting wait for");
@@ -53,11 +55,10 @@ public class MainClass {
 		}
 		
 		pool.shutdown();
-		timeBombsPool.shutdown();
+		enforcer.shutdown();
 		System.out.println("main done");
 		
 		pool.awaitTermination(99999, TimeUnit.MINUTES);
-		timeBombsPool.awaitTermination(99999, TimeUnit.MINUTES);
 		System.out.println(resultsCounter);
 	}
 	
@@ -66,8 +67,8 @@ public class MainClass {
 		map.put(key, map.get(key) + 1);
 	}
 	
-	private static void initSleeper(int sleepTime, ExecutorService pool, ExecutorService timeBombsPool, List<SelfTimeoutCallable> lst) {
-		SelfTimeoutCallable init = new SelfTimeoutCallable(sleepTime, 7, timeBombsPool);
+	private static void initSleeper(int sleepTime, ExecutorService pool, CallableWithTimeoutEnforcer enforcer, List<SelfTimeoutCallable> lst) {
+		SelfTimeoutCallable init = new SelfTimeoutCallable(sleepTime, 7, enforcer);
 		lst.add(init);
 		init.setInnerFuture(pool.submit(init));
 		Utils.sleep(10);

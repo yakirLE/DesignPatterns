@@ -2,9 +2,13 @@ package com.yakir.callablewithtimeout;
 
 import static com.yakir.callablewithtimeout.MainClass.logMessage;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,20 +44,21 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 	protected int myId = id.incrementAndGet();
 	// DEBUG
 	
-	private final ExecutorService timeBombsCachedThreadPool;
 	private T result = null;
 	private long startTimeMillis;
 	private long timeoutMillis;
+	private AtomicBoolean started = new AtomicBoolean(false);
 	private AtomicBoolean finishedSuccessfully = new AtomicBoolean(false);
 	private AtomicBoolean killed = new AtomicBoolean(false);
 	private AtomicBoolean timedout = new AtomicBoolean(false);
-	private AtomicReference<Exception> exception = new AtomicReference<>();
+	private AtomicReference<Throwable> exception = new AtomicReference<>();
 	private AtomicReference<Future<?>> innerFuture = new AtomicReference<>();
 	private boolean readyForWait = false;
 	
-	public CallableWithTimeout(long timeout, TimeUnit unit, final ExecutorService timeBombsCachedThreadPool) {
+	public CallableWithTimeout(long timeout, TimeUnit unit, final CallableWithTimeoutEnforcer timeoutEnforcer) {
 		this.timeoutMillis = unit.toMillis(timeout);
-		this.timeBombsCachedThreadPool = timeBombsCachedThreadPool;
+		timeoutEnforcer.start();
+		timeoutEnforcer.register(this);
 	}
 	
 	protected long getStartTimeMillis() {
@@ -68,6 +73,10 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 		this.result = result;
 	}
 
+	public boolean didStart() {
+		return started.get();
+	}
+	
 	public boolean isFinishedSuccessfully() {
 		return finishedSuccessfully.get();
 	}
@@ -84,7 +93,7 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 		return Optional.ofNullable(exception.get()).isPresent();
 	}
 
-	public Exception getException() {
+	public Throwable getException() {
 		return exception.get();
 	}
 	
@@ -121,7 +130,7 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 	}
 	
 	private boolean isStillRunning() {
-		return !isFinishedSuccessfully() && !isExecutionError();
+		return didStart() && !isFinishedSuccessfully() && !isExecutionError();
 	}
 	
 	private void killMe(boolean timeout) {
@@ -136,14 +145,14 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 	@Override
 	public void run() {
 		startTimeMillis = System.currentTimeMillis();
+		started.set(true);
 		readyForWait = true;
-		timeBombsCachedThreadPool.submit(new TimeBomb());
 		try {
 			result = callInternal();
 			if(!isKilled()) {
 				finishedSuccessfully.set(true);
 			}
-		} catch(Exception e) {
+		} catch(Throwable e) {
 			exception.set(e);
 			killMe(false);
 		}
@@ -169,32 +178,65 @@ public abstract class CallableWithTimeout<T> implements Runnable {
 	protected abstract T callInternal();
 	protected abstract void executeIfTimedout();
 	
-	private class TimeBomb implements Runnable {
-		
-		private long sleepIntervalsMS;
+	public static class CallableWithTimeoutEnforcer implements Runnable {
 
-		// DEBUG - delete it and followed errors
-		public TimeBomb() {
-			this(1, TimeUnit.SECONDS);
-		}
-		// DEBUG
+		private long sleepIntervalsMS;
+		private AtomicInteger registerId = new AtomicInteger(0);
+		private AtomicBoolean startedRunning = new AtomicBoolean(false);
+		private AtomicBoolean shutdown = new AtomicBoolean(false);
+		private Map<Integer, CallableWithTimeout<?>> running = new ConcurrentHashMap<>();
 		
-		public TimeBomb(long sleepInterval, TimeUnit unit) {
+		public CallableWithTimeoutEnforcer(long sleepInterval, TimeUnit unit) {
 			this.sleepIntervalsMS = unit.toMillis(sleepInterval);
+		}
+		
+		private void start() {
+			if(startedRunning.compareAndSet(false, true)) {
+				logMessage("starting enforcer");
+				new Thread(this).start();
+			}
+		}
+		
+		public void register(CallableWithTimeout<?> cwt) {
+			running.put(registerId.incrementAndGet(), cwt);
+		}
+		
+		public boolean isRunning() {
+			return startedRunning.get();
+		}
+		
+		public boolean isShutdown() {
+			return shutdown.get();
+		}
+		
+		public void shutdown() {
+			this.shutdown.set(true);
 		}
 		
 		@Override
 		public void run() {
-			while(!isFinishedSuccessfully() && !isKilled()) {
+			while(!isShutdown() || (isRunning() && !running.isEmpty())) {
 				Utils.sleep(sleepIntervalsMS);
-				if(isStillRunning()) {
-					long timeLeft = calcTimeLeft();
-					if(timeLeft <= 0) {
-						logMessage(myId + " killing using time bomb");
-						killMe(true);
+				Set<Integer> done = new HashSet<>();
+				for(Entry<Integer, CallableWithTimeout<?>> e : running.entrySet()) {
+					Integer id = e.getKey();
+					CallableWithTimeout<?> cwt = e.getValue();
+					if(cwt.isStillRunning()) {
+						long timeLeft = cwt.calcTimeLeft();
+						if(timeLeft <= 0) {
+							logMessage(cwt.myId + " killing using enforcer");
+							cwt.killMe(true);
+							done.add(id);
+						}
+					} else if(cwt.didStart()) {
+						done.add(id);
 					}
 				}
+				
+				running.keySet().removeAll(done);
 			}
+			
+			logMessage("enforcer finished!");
 		}
 	}
 }
