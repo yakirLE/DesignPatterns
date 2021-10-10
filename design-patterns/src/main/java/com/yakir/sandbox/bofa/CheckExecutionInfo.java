@@ -13,7 +13,7 @@ import lombok.Data;
 @Data 
 public class CheckExecutionInfo {
 	private String checkName;
-	private int tickets;
+	private Integer tickets;
 	private long durationSeconds;
 	private String type;
 	private String line;
@@ -21,8 +21,8 @@ public class CheckExecutionInfo {
 
 	private CheckExecutionInfo(CheckExecutionInfo.CheckExecutionInfoBuilder builder) {
 		this.checkName = builder.checkName;
-		this.tickets = builder.tickets;
 		this.durationSeconds = builder.calcDuration();
+		this.tickets = builder.tickets;
 		this.type = builder.type;
 		this.line = builder.line;
 		this.system = builder.system;
@@ -41,8 +41,9 @@ public class CheckExecutionInfo {
 		private static final Pattern REGEX_BOFA_CHECK = Pattern.compile("(\\[.+?\\]): '\\s*(\\d+.\\d+):?\\s*(.+)'");
 		
 		private String checkName;
-		private int tickets;
+		private Integer tickets;
 		private String duration;
+		private boolean calcDuration = true;
 		private String type;
 		private String line;
 		private String system;
@@ -61,9 +62,13 @@ public class CheckExecutionInfo {
 		}
 
 		private long calcDuration() {
-			String[] parts = duration.split(" ");
-			CheckExecutionInfoBuilder.DurationUnit u = DurationUnit.findByName(parts[1]);
-			return u.calcDurationInSeconds(parts[0]);
+			if(calcDuration) {
+				String[] parts = duration.split(" ");
+				CheckExecutionInfoBuilder.DurationUnit u = DurationUnit.findByName(parts[1]);
+				return u.calcDurationInSeconds(parts[0]);
+			}
+			
+			return Long.parseLong(duration);
 		}
 
 		public CheckExecutionInfo.CheckExecutionInfoBuilder setTickets(String tickets) {
@@ -73,6 +78,11 @@ public class CheckExecutionInfo {
 
 		public CheckExecutionInfo.CheckExecutionInfoBuilder setDuration(String duration) {
 			this.duration = duration;
+			return this;
+		}
+		
+		public CheckExecutionInfo.CheckExecutionInfoBuilder disableCalcDuration() {
+			this.calcDuration = false;
 			return this;
 		}
 

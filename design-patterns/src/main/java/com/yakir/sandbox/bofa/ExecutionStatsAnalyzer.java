@@ -1,9 +1,17 @@
 package com.yakir.sandbox.bofa;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,21 +26,27 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ExecutionStatsAnalyzer {
 
-	private String fromStats;
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private static final Pattern PATTERN_CHECK_STARTED = Pattern.compile("(\\d+/\\d+/\\d+ \\d+:\\d+:\\d+).+starting \\(#(\\d+)\\) \\[(.+?)\\] (\\[.+\\]: .+')");
+	private static final Pattern PATTERN_CHECK_FINISHED = Pattern.compile("(\\d+/\\d+/\\d+ \\d+:\\d+:\\d+).+finished \\(#(\\d+)\\) \\[(.+?)\\] (\\[.+\\]: .+')(.*)");
+	
+	private String fromSource;
 	private String fromDescription;
-	private String toStats;
+	private String toSource;
 	private String toDescription;
 	
-	public void execute(Product from, Product to) throws IOException {
+	public void execute(Product from, boolean fromUsingStats, Product to, boolean toUsingStats) throws IOException, ParseException {
 		Map<String, List<CheckExecutionInfo>> results = new TreeMap<>();
-		Matcher m = to.getPattern().matcher(toStats);
-		while(m.find()) {
-			fillMap(m, results, toDescription);
+		if(toUsingStats) {
+			findUsingStats(to, toDescription, toSource, results);
+		} else {
+			findUsingLogEntries(toSource, results, toDescription);
 		}
 		
-		m = from.getPattern().matcher(fromStats);
-		while(m.find()) {
-			fillMap(m, results, fromDescription);
+		if(fromUsingStats) {
+			findUsingStats(from, fromDescription, fromSource, results);
+		} else {
+			findUsingLogEntries(fromSource, results, fromDescription);
 		}
 		
 		StringJoiner sjContent = new StringJoiner("\n");
@@ -43,6 +57,45 @@ public class ExecutionStatsAnalyzer {
 		printMap(new TreeMap<>(results.entrySet().stream().filter(e -> e.getValue().size() == 1 && e.getValue().iterator().next().getSystem().equals(fromDescription)).collect(Collectors.toMap(Entry::getKey, Entry::getValue))), sjContent);
 		
 		Files.writeString(Path.of("checksStats.txt"), sjContent.toString());
+	}
+	
+	private void findUsingStats(Product product, String description, String stats, Map<String, List<CheckExecutionInfo>> results) {
+		Matcher m = product.getPattern().matcher(stats);
+		while(m.find()) {
+			fillMap(m, results, description);
+		}
+	}
+	
+	private void findUsingLogEntries(String file, Map<String, List<CheckExecutionInfo>> results, String system) throws FileNotFoundException, IOException, ParseException {
+		try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+			Map<String, Matcher> idToStartLineMatcher = new HashMap<>();
+			String line;
+			while((line = br.readLine()) != null) {
+				Matcher m = PATTERN_CHECK_STARTED.matcher(line);
+				if(m.find()) {
+					idToStartLineMatcher.put(m.group(2), m);
+				} else {
+					m = PATTERN_CHECK_FINISHED.matcher(line);
+					if(m.find()) {
+						String id = m.group(2);
+						String type = m.group(3);
+						String checkName = m.group(4);
+						Matcher startMatcher = idToStartLineMatcher.get(id);
+						Date startDate = SDF.parse(startMatcher.group(1));
+						Date endDate = SDF.parse(m.group(1));
+						long durationSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
+						CheckExecutionInfo info = CheckExecutionInfo.of(checkName)
+																	.setDuration(durationSeconds+"")
+																	.disableCalcDuration()
+																	.setType(type)
+																	.setLine(line)
+																	.setSystem(system)
+																	.build();
+						results.computeIfAbsent(info.getCheckName(), k -> new ArrayList<>()).add(info);
+					}
+				}
+			}
+		}
 	}
 	
 	private void printMap(Map<String, List<CheckExecutionInfo>> map, StringJoiner sjContent) {
@@ -61,7 +114,12 @@ public class ExecutionStatsAnalyzer {
 			});
 			
 			if(info.size() == 2) {
-				sj.add((info.get(0).getTickets() - info.get(1).getTickets())+"");
+				if(info.get(0).getTickets() == null || info.get(1).getTickets() == null) {
+					sj.add("null");
+				} else {
+					sj.add((info.get(0).getTickets() - info.get(1).getTickets())+"");
+				}
+				
 				sj.add((info.get(0).getDurationSeconds() - info.get(1).getDurationSeconds())+"");
 				sj.add(info.get(0).getLine());
 				sj.add(info.get(1).getLine());
